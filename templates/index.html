@@ -1,0 +1,194 @@
+{% load static %}
+{% include "layouts/master.html" %}
+{% comment %} {% extends 'layout/master.html' %} {% endcomment %}
+
+{% block content %}
+<div class="container mt-10">
+    <div class="card card-flush text-white text-center mb-10 shadow-sm" style="background-image: url('/static/images/sby1.jpg'); 
+           background-size: cover; 
+           background-position: center;">
+        <div class="card-body py-10" style="background-color: rgba(0,0,0,0.2); border-radius: 12px;">
+            <h1 class="fs-1 fw-bold text-white">Selamat Datang Prediksi Kualitas Udara</h1>
+            <h2 class="fs-2 fw-bold text-white">SURABAYA</h2>
+            <p class="text-white-50">Get real-time air quality predictions for Surabaya</p>
+        </div>
+    </div>
+
+
+    <div class="row g-6 mb-10">
+        <div class="col-lg-9">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <div class="fs-1 fw-bold">HARI INI</div>
+                <p class="text-black">{{ today|date:"D, d M Y" }}</p>
+          
+                <div class="row g-6 mt-4">
+                  <!-- PM2.5 -->
+                  <div class="col-md-2">
+                    <div class="card bg-light border-0">
+                      <div class="card-body">
+                        <h6 class="fw-bold">PM2.5</h6>
+                        <h3>{{ aqi.pm25 }}</h3>                     
+                      </div>
+                    </div>
+                  </div>
+          
+                  <!-- CO -->
+                  <div class="col-md-2">
+                    <div class="card bg-light border-0">
+                      <div class="card-body">
+                        <h6 class="fw-bold">CO</h6>
+                        <h3>{{ aqi.co }}</h3>                    
+                      </div>
+                    </div>
+                  </div>
+          
+                  <!-- Ozone -->
+                  <div class="col-md-2">
+                    <div class="card bg-light border-0">
+                      <div class="card-body">
+                        <h6 class="fw-bold">O3</h6>
+                        <h3>{{ aqi.o3 }}</h3>                  
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- pm10 -->
+                  <div class="col-md-2">
+                    <div class="card bg-light border-0">
+                      <div class="card-body">
+                        <h6 class="fw-bold">PM10</h6>
+                        <h3>{{ aqi.pm10 }}</h3>                      
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- no2 -->
+                  <div class="col-md-2">
+                    <div class="card bg-light border-0">
+                      <div class="card-body">
+                        <h6 class="fw-bold">NO2</h6>
+                        <h3>{{ aqi.no2 }}</h3>                    
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- so2 -->
+                  <div class="col-md-2">
+                    <div class="card bg-light border-0">
+                      <div class="card-body">
+                        <h6 class="fw-bold">SO2</h6>
+                        <h3>{{ aqi.so2 }}</h3>
+                      </div>
+                    </div>
+                  </div>
+
+                </div> <!-- end row -->
+              </div> <!-- end card-body -->
+            </div> <!-- end card -->
+          </div> <!-- end col-lg-9 -->
+          
+        
+        <div class="col-lg-3">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title fw-bold">Polutan dominan {{aqi.dominan}}</h5>
+                <h1 class="display-1 my-4">{{aqi.aqi}}</h1>
+                <p class="text-muted"> {{aqi.timestamp | date:"D, d M Y H:i"}}</p>
+              </div>
+            </div>
+          </div>
+          
+    </div>
+
+    <div class="row g-6 mb-10">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-header">
+                    <span class="badge badge-light fw-bold">Prediksi</span>
+                </div>
+                <div class="card-body fs-1 fw-bold">45</div>
+                <div class="card-footer text-muted"> {{day_one | date:"D, d M Y"}}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-header">
+                    <span class="badge badge-light fw-bold">Prediksi</span>
+                </div>
+                <div class="card-body fs-1 fw-bold">47</div>
+                <div class="card-footer text-muted">{{day_two | date:"D, d M Y"}}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-header">
+                    <span class="badge badge-light fw-bold">Prediksi</span>
+                </div>
+                <div class="card-body fs-1 fw-bold">46</div>
+                <div class="card-footer text-muted">{{day_three | date:"D, d M Y"}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-10">
+        <div class="card-header">
+            <h3 class="card-title fw-bold">Air Quality Trends</h3>
+        </div>
+        <div class="card-body">
+            <div id="airQualityChart" style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <div class="row g-6">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="fs-2 fw-bold">PM2.5</div>
+                    <div class="fs-1">15</div>
+                    <div class="text-muted">-5%</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="fs-2 fw-bold">CO2</div>
+                    <div class="fs-1">400</div>
+                    <div class="text-success">+2%</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="fs-2 fw-bold">Ozone</div>
+                    <div class="fs-1">30</div>
+                    <div class="text-muted">0%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var options = {
+        chart: {
+            type: 'bar',
+            height: 300
+        },
+        series: [{
+            name: 'Pollutants',
+            data: [70, 55, 35, 50, 42, 60, 45]
+        }],
+        xaxis: {
+            categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#airQualityChart"), options);
+    chart.render();
+</script>
+{% endblock %}
