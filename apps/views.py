@@ -1,8 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from datetime import datetime, date, timedelta
-from apps.models import AQILog
+from apps.models import AQILog, PredictedAQI
 from django.db.models import Count, Q
+from django.db.models import Avg
+from django.utils.timezone import now
+
 
 # Create your views here.
 
@@ -15,7 +18,7 @@ def index(request):
     aqi = AQILog.objects.order_by('-log_date').first()
     
     total_data = AQILog.objects.all().count
-    tidak_terdeteksi = AQILog.objects.filter(aqi='-').count
+    # tidak_terdeteksi = AQILog.objects.filter(aqi='-').count
     
     pm25 = AQILog.objects.filter(pm25__regex=r'^\d+(\.\d+)?$').count()
     co = AQILog.objects.filter(co__regex=r'^\d+(\.\d+)?$').count()
@@ -23,16 +26,22 @@ def index(request):
     pm10 = AQILog.objects.filter(pm10__regex=r'^\d+(\.\d+)?$').count()
     no2 = AQILog.objects.filter(no2__regex=r'^\d+(\.\d+)?$').count()
     so2 = AQILog.objects.filter(so2__regex=r'^\d+(\.\d+)?$').count()
-
-
-
-
-
+    predictions = PredictedAQI.objects.order_by('timestamp')
     
-    aqi.aqi = int(aqi.aqi)    
-    bg_aqi = AQILog.aqi
     
+    today = now().date()
+    three_days = [today + timedelta(days=i) for i in range(1, 4)]  # besok sampai 3 hari ke depan
 
+    result = []
+
+    for day in three_days:
+        day_data = PredictedAQI.objects.filter(timestamp__date=day)
+        avg_aqi = day_data.aggregate(avg_aqi=Avg('predicted_aqi'))['avg_aqi']
+
+        result.append({
+            'date': day,
+            'average_aqi': round(avg_aqi, 2) if avg_aqi else None
+        })
     
     context ={
         'title' : 'AQI',
@@ -42,13 +51,15 @@ def index(request):
         'day_three' :day_three,
         'aqi':aqi,
         'total_data':total_data,
-        'tidak_terdeteksi':tidak_terdeteksi,
+        # 'tidak_terdeteksi':tidak_terdeteksi,
         'pm25':pm25,
         'co2':co,
         'o3':o3,
         'pm10':pm10,
         'no2':no2,
-        'so2':so2
+        'so2':so2,
+        'predictions':predictions,
+        'daily_predictions': result
         
     }
     return render (request, 'index.html', context)

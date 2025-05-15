@@ -18,3 +18,10 @@ class AQILog(models.Model):
 
     def __str__(self):
         return f"{self.log_date} - {self.timestamp} - AQI: {self.aqi}"
+    
+class PredictedAQI(models.Model):
+    timestamp = models.DateTimeField(unique=True)
+    predicted_aqi = models.FloatField()
+
+    def __str__(self):
+        return f"{self.timestamp} - {self.predicted_aqi}"

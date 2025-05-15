@@ -124,182 +124,221 @@
 
 
 
-    
+
 
   </div>
 
   <div class="row g-6 mb-10">
+    {% for prediction in daily_predictions %}
     <div class="col-md-4">
       <div class="card text-center border-info shadow-sm">
         <div class="card-header-secondary">
           <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
         </div>
-        <div class="card-body fs-1 fw-bold">45</div>
-        <div class="card-footer text-muted"> {{day_one | date:"D, d M Y"}}</div>
+        <div class="card-body fs-1 fw-bold"> {{prediction.average_aqi}}</div>
+        <div class="card-footer text-muted"> {{prediction.date | date:"D, d M Y"}}</div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card text-center border-info shadow-sm">
-        <div class="card-header-secondary">
-          <span class="badge badge-light fw-bold text-info">Prediksi AQI</span>
+    {% endfor%}
+
+    <div class="row g-6 mb-10">
+      <div class="card mb-10 border-success shadow-sm">
+        <div class="card-header">
+          <h3 class="card-title fw-bold">Prediksi AQI 3 Hari ke Depan (Setiap jam)</h3>
         </div>
-        <div class="card-body fs-1 fw-bold">47</div>
-        <div class="card-footer text-muted">{{day_two | date:"D, d M Y"}}</div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center border-info shadow-sm">
-        <div class="card-header-secondary">
-          <span class="badge badge-light fw-bold text-info">Prediksi AQI</span>
+        <div class="card-body">
+          <table class="table table-bordered text-center">
+            <thead class="table-primary">
+              <tr>
+                <th style="width: 35%;">Waktu</th>
+                <th style="width: 35%;">Prediksi AQI</th>
+                <th style="width: 30%;">Kategori</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in predictions %}
+              <tr>
+                <td>{{item.timestamp| date:"D, d M Y H:i"}}</td>
+                <td>{{item.predicted_aqi}}</td>
+                <td class="
+  {% if item.predicted_aqi|to_int <= 50 %}
+    bg-hijau 
+  {% elif item.predicted_aqi|to_int <= 100 %}
+    bg-biru
+  {% elif item.predicted_aqi|to_int <= 200 %}
+    bg-kuning
+  {% elif item.predicted_aqi|to_int <= 300 %}
+    bg-merah
+  {% elif item.predicted_aqi|to_int >= 301 %} 
+    bg-hitam
+  {% else %}
+    bg-putih
+  {% endif %}
+">{% if item.predicted_aqi|to_int <= 50 %}
+                  Baik
+                  {% elif item.predicted_aqi|to_int <= 100 %}
+                  Sedang
+                  {% elif item.predicted_aqi|to_int <= 200 %}
+                  Tidak Sehat
+                  {% elif item.predicted_aqi|to_int <= 300 %}
+                  Sangat Tidak Sehat
+                  {% elif item.predicted_aqi|to_int >= 301 %}
+                  Berbahaya
+                  {% else %}
+                  Tidak Diketahui
+                  {% endif %}</td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
         </div>
-        <div class="card-body fs-1 fw-bold">46</div>
-        <div class="card-footer text-muted">{{day_three | date:"D, d M Y"}}</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-10 border-warning shadow-sm ">
-    <div class="card-header">
-      <h3 class="card-title fw-bold">Air Quality Trends</h3>
-    </div>
-    <div class="row">
-      <div class="col-12 col-md-6">
-        <div class="card-body" style="height: 300px;">
-          <canvas id="dominanchart"></canvas>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-6">
-        <div class="card-body" style="height: 300px;">
-          <canvas id="polutanChart"></canvas>
-        </div>
       </div>
     </div>
 
-  </div>
-
-
-  <div class="row g-6 mb-10">
-    <div class="card mb-10 border-primary shadow-sm">
+    <div class="card mb-10 border-warning shadow-sm ">
       <div class="card-header">
-        <h3 class="card-title fw-bold">Kategori Indeks Standar Pencemaran Udara (ISPU)</h3>
+        <h3 class="card-title fw-bold">Air Quality Trends</h3>
       </div>
-      <div class="card-body">
-        <table class="table table-bordered text-center">
-          <thead class="table-primary">
-            <tr>
-              <th>Rentang</th>
-              <th>Kategori</th>
-              <th>Penjelasan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td >1–50</td>
-              <td class="bg-hijau">Baik</td>
-              <td>Tingkat mutu udara yang sangat baik, tidak memberikan efek negatif terhadap manusia, hewan dan
-                tumbuhan</td>
-            </tr>
-            <tr>
-              <td>51–100</td>
-              <td class="bg-biru">Sedang</td>
-              <td>Tingkat mutu udara masih dapat diterima pada kesehatan manusia, hewan dan tumbuhan.</td>
-            </tr>
-            <tr>
-              <td>101–200</td>
-              <td class="bg-kuning">Tidak Sehat</td>
-              <td>Tingkat mutu udara yang bersifat merugikan pada manusia, hewan dan tumbuhan.</td>
-            </tr>
-            <tr>
-              <td>201–300</td>
-              <td class="bg-merah">Sangat Tidak Sehat</td>
-              <td>Tingkat mutu udara yang dapat meningkatkan resiko kesehatan pada sejumlah segmen populasi yang
-                terpapar.</td>
-            </tr>
-            <tr>
-              <td>301+</td>
-              <td class="bg-hitam text-white">Berbahaya</td>
-              <td>Tingkat mutu udara yang dapat merugikan kesehatan serius pada populasi dan perlu penanganan cepat.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="card-body" style="height: 300px;">
+            <canvas id="dominanchart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="card-body" style="height: 300px;">
+            <canvas id="polutanChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row g-6 mb-10">
+      <div class="card mb-10 border-primary shadow-sm">
+        <div class="card-header">
+          <h3 class="card-title fw-bold">Kategori Indeks Standar Pencemaran Udara (ISPU)</h3>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered text-center">
+            <thead class="table-primary">
+              <tr>
+                <th>Rentang</th>
+                <th>Kategori</th>
+                <th>Penjelasan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1–50</td>
+                <td class="bg-hijau">Baik</td>
+                <td>Tingkat mutu udara yang sangat baik, tidak memberikan efek negatif terhadap manusia, hewan dan
+                  tumbuhan</td>
+              </tr>
+              <tr>
+                <td>51–100</td>
+                <td class="bg-biru">Sedang</td>
+                <td>Tingkat mutu udara masih dapat diterima pada kesehatan manusia, hewan dan tumbuhan.</td>
+              </tr>
+              <tr>
+                <td>101–200</td>
+                <td class="bg-kuning">Tidak Sehat</td>
+                <td>Tingkat mutu udara yang bersifat merugikan pada manusia, hewan dan tumbuhan.</td>
+              </tr>
+              <tr>
+                <td>201–300</td>
+                <td class="bg-merah">Sangat Tidak Sehat</td>
+                <td>Tingkat mutu udara yang dapat meningkatkan resiko kesehatan pada sejumlah segmen populasi yang
+                  terpapar.</td>
+              </tr>
+              <tr>
+                <td>301+</td>
+                <td class="bg-hitam text-white">Berbahaya</td>
+                <td>Tingkat mutu udara yang dapat merugikan kesehatan serius pada populasi dan perlu penanganan cepat.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
-  {% endblock %}
-  {% include "layouts/footer.html" %}
+
+{% endblock %}
+{% include "layouts/footer.html" %}
 
 
-  {% block scripts %}
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    fetch("{% url 'chart-dominan' %}")
-      .then(response => response.json())
-      .then(data => {
-        const ctx = document.getElementById('dominanchart').getContext('2d');
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: data.labels,
-            datasets: [{
-              label: 'Frekuensi Polutan Dominan',
-              data: data.values,
-              backgroundColor: 'rgba(75, 192, 192, 0.5)',
-              borderColor: 'rgba(75, 192, 192, 1)',
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true
-              }
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  fetch("{% url 'chart-dominan' %}")
+    .then(response => response.json())
+    .then(data => {
+      const ctx = document.getElementById('dominanchart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Frekuensi Polutan Dominan',
+            data: data.values,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
             }
           }
-        });
+        }
       });
-  </script>
-  <script>
-    fetch("{% url 'get_chart_data_polutan' %}")
-      .then(response => response.json())
-      .then(data => {
-        const ctx = document.getElementById('polutanChart').getContext('2d');
-        
-        // Membuat chart menggunakan Chart.js
-        const chart = new Chart(ctx, {
-          type: 'bar',  // Tipe chart (bar, line, pie, dll)
-          data: {
-            labels: data.labels,  // Labels (nama polutan)
-            datasets: [{
-              label: 'Jumlah Polutan',  // Label dataset
-              data: data.values,  // Nilai jumlah tiap polutan
-              backgroundColor: 'rgba(158, 188, 138, 0.5)',  // Warna latar belakang bar
-              borderColor: 'rgba(114, 143, 94, 1)',  // Warna border bar
-              borderWidth: 1  // Lebar border bar
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top'
-              },
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return context.raw;  // Menampilkan nilai tooltip sesuai dengan data
-                  }
+    });
+</script>
+<script>
+  fetch("{% url 'get_chart_data_polutan' %}")
+    .then(response => response.json())
+    .then(data => {
+      const ctx = document.getElementById('polutanChart').getContext('2d');
+
+      // Membuat chart menggunakan Chart.js
+      const chart = new Chart(ctx, {
+        type: 'bar', // Tipe chart (bar, line, pie, dll)
+        data: {
+          labels: data.labels, // Labels (nama polutan)
+          datasets: [{
+            label: 'Jumlah Polutan', // Label dataset
+            data: data.values, // Nilai jumlah tiap polutan
+            backgroundColor: 'rgba(158, 188, 138, 0.5)', // Warna latar belakang bar
+            borderColor: 'rgba(114, 143, 94, 1)', // Warna border bar
+            borderWidth: 1 // Lebar border bar
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return context.raw; // Menampilkan nilai tooltip sesuai dengan data
                 }
               }
             }
           }
-        });
-      })
-      .catch(error => console.error('Error loading chart data:', error));
-  </script>
-  
+        }
+      });
+    })
+    .catch(error => console.error('Error loading chart data:', error));
+</script>
 
-  {% endblock %}
+
+{% endblock %}
