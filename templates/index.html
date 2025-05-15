@@ -1,194 +1,305 @@
 {% load static %}
+{% load custom_filters %}
+
 {% include "layouts/master.html" %}
-{% comment %} {% extends 'layout/master.html' %} {% endcomment %}
 
 {% block content %}
 <div class="container mt-10">
-    <div class="card card-flush text-white text-center mb-10 shadow-sm" style="background-image: url('/static/images/sby1.jpg'); 
+  <div class="card card-flush text-white text-center mb-10 shadow-sm" style="background-image: url('/static/images/sby5.png '); 
            background-size: cover; 
            background-position: center;">
-        <div class="card-body py-10" style="background-color: rgba(0,0,0,0.2); border-radius: 12px;">
-            <h1 class="fs-1 fw-bold text-white">Selamat Datang Prediksi Kualitas Udara</h1>
-            <h2 class="fs-2 fw-bold text-white">SURABAYA</h2>
-            <p class="text-white-50">Get real-time air quality predictions for Surabaya</p>
+    <div class="card-body py-10" style="background-color: rgba(128,307,213,0.2); border-radius: 12px;">
+      <h1 class="fs-1 fw-bold text-white">Selamat Datang Prediksi Kualitas Udara</h1>
+      <h2 class="fs-2 fw-bold text-white">SURABAYA</h2>
+      <p class="text-white-50">Get real-time air quality predictions for Surabaya</p>
+    </div>
+  </div>
+
+
+  <div class="row g-6 mb-10">
+    <div class="col-lg-3">
+      <div class="card 
+  {% if aqi.aqi|to_int <= 50 %}
+    bg-hijau
+  {% elif aqi.aqi|to_int <= 100 %}
+    bg-biru
+  {% elif aqi.aqi|to_int <= 200 %}
+    bg-kuning
+  {% elif aqi.aqi|to_int <= 300 %}
+    bg-merah
+  {% elif aqi.aqi|to_int >= 301 %} 
+    bg-hitam
+    {% else %}
+    bg-putih
+
+  {% endif %} text-center shadow">
+
+        <div class="card-body fs-1 fw-bold text-dark"> AQI HARI INI
+          <h5 class="card-title fw-semibold">Polutan dominan {{aqi.dominan}}</h5>
+          <h1 class="display-1 my-4">{{aqi.aqi}}</h1>
+          <p class="text-dark fs-5 fw-semibold"> {{aqi.timestamp | date:"D, d M Y H:i"}}</p>
         </div>
+      </div>
     </div>
 
 
-    <div class="row g-6 mb-10">
-        <div class="col-lg-9">
-            <div class="card text-center shadow-sm">
-              <div class="card-body">
-                <div class="fs-1 fw-bold">HARI INI</div>
-                <p class="text-black">{{ today|date:"D, d M Y" }}</p>
-          
-                <div class="row g-6 mt-4">
-                  <!-- PM2.5 -->
-                  <div class="col-md-2">
-                    <div class="card bg-light border-0">
-                      <div class="card-body">
-                        <h6 class="fw-bold">PM2.5</h6>
-                        <h3>{{ aqi.pm25 }}</h3>                     
-                      </div>
-                    </div>
-                  </div>
-          
-                  <!-- CO -->
-                  <div class="col-md-2">
-                    <div class="card bg-light border-0">
-                      <div class="card-body">
-                        <h6 class="fw-bold">CO</h6>
-                        <h3>{{ aqi.co }}</h3>                    
-                      </div>
-                    </div>
-                  </div>
-          
-                  <!-- Ozone -->
-                  <div class="col-md-2">
-                    <div class="card bg-light border-0">
-                      <div class="card-body">
-                        <h6 class="fw-bold">O3</h6>
-                        <h3>{{ aqi.o3 }}</h3>                  
-                      </div>
-                    </div>
-                  </div>
+    <div class="col-lg-9">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <div class="fs-1 fw-bold">HARI INI</div>
+          <p class="text-black">{{ today|date:"D, d M Y" }}</p>
 
-                  <!-- pm10 -->
-                  <div class="col-md-2">
-                    <div class="card bg-light border-0">
-                      <div class="card-body">
-                        <h6 class="fw-bold">PM10</h6>
-                        <h3>{{ aqi.pm10 }}</h3>                      
-                      </div>
-                    </div>
-                  </div>
+          <div class="row g-6 mt-4">
+            <!-- PM2.5 -->
+            <div class="col-md-2">
+              <div class="card border-info shadow-sm">
 
-                  <!-- no2 -->
-                  <div class="col-md-2">
-                    <div class="card bg-light border-0">
-                      <div class="card-body">
-                        <h6 class="fw-bold">NO2</h6>
-                        <h3>{{ aqi.no2 }}</h3>                    
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- so2 -->
-                  <div class="col-md-2">
-                    <div class="card bg-light border-0">
-                      <div class="card-body">
-                        <h6 class="fw-bold">SO2</h6>
-                        <h3>{{ aqi.so2 }}</h3>
-                      </div>
-                    </div>
-                  </div>
-
-                </div> <!-- end row -->
-              </div> <!-- end card-body -->
-            </div> <!-- end card -->
-          </div> <!-- end col-lg-9 -->
-          
-        
-        <div class="col-lg-3">
-            <div class="card text-center shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title fw-bold">Polutan dominan {{aqi.dominan}}</h5>
-                <h1 class="display-1 my-4">{{aqi.aqi}}</h1>
-                <p class="text-muted"> {{aqi.timestamp | date:"D, d M Y H:i"}}</p>
+                <div class="card-body">
+                  <h6 class="fw-bold">PM2.5</h6>
+                  <h3>{{ aqi.pm25 }}</h3>
+                </div>
               </div>
             </div>
-          </div>
-          
+
+            <!-- CO -->
+            <div class="col-md-2">
+              <div class="card border-info shadow-sm">
+
+                <div class="card-body">
+                  <h6 class="fw-bold">CO</h6>
+                  <h3>{{ aqi.co }}</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ozone -->
+            <div class="col-md-2">
+              <div class="card border-info shadow-sm">
+
+                <div class="card-body">
+                  <h6 class="fw-bold">O3</h6>
+                  <h3>{{ aqi.o3 }}</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- pm10 -->
+            <div class="col-md-2">
+              <div class="card border-info shadow-sm">
+
+                <div class="card-body">
+                  <h6 class="fw-bold">PM10</h6>
+                  <h3>{{ aqi.pm10 }}</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- no2 -->
+            <div class="col-md-2">
+              <div class="card border-info shadow-sm">
+
+                <div class="card-body">
+                  <h6 class="fw-bold">NO2</h6>
+                  <h3>{{ aqi.no2 }}</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- so2 -->
+            <div class="col-md-2">
+              <div class="card border-info shadow-sm">
+
+                <div class="card-body">
+                  <h6 class="fw-bold">SO2</h6>
+                  <h3>{{ aqi.so2 }}</h3>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- end row -->
+        </div> <!-- end card-body -->
+      </div> <!-- end card -->
+    </div> <!-- end col-lg-9 -->
+
+
+
+
+    
+
+  </div>
+
+  <div class="row g-6 mb-10">
+    <div class="col-md-4">
+      <div class="card text-center border-info shadow-sm">
+        <div class="card-header-secondary">
+          <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
+        </div>
+        <div class="card-body fs-1 fw-bold">45</div>
+        <div class="card-footer text-muted"> {{day_one | date:"D, d M Y"}}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center border-info shadow-sm">
+        <div class="card-header-secondary">
+          <span class="badge badge-light fw-bold text-info">Prediksi AQI</span>
+        </div>
+        <div class="card-body fs-1 fw-bold">47</div>
+        <div class="card-footer text-muted">{{day_two | date:"D, d M Y"}}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center border-info shadow-sm">
+        <div class="card-header-secondary">
+          <span class="badge badge-light fw-bold text-info">Prediksi AQI</span>
+        </div>
+        <div class="card-body fs-1 fw-bold">46</div>
+        <div class="card-footer text-muted">{{day_three | date:"D, d M Y"}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-10 border-warning shadow-sm ">
+    <div class="card-header">
+      <h3 class="card-title fw-bold">Air Quality Trends</h3>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="card-body" style="height: 300px;">
+          <canvas id="dominanchart"></canvas>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="card-body" style="height: 300px;">
+          <canvas id="polutanChart"></canvas>
+        </div>
+      </div>
     </div>
 
-    <div class="row g-6 mb-10">
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-header">
-                    <span class="badge badge-light fw-bold">Prediksi</span>
-                </div>
-                <div class="card-body fs-1 fw-bold">45</div>
-                <div class="card-footer text-muted"> {{day_one | date:"D, d M Y"}}</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-header">
-                    <span class="badge badge-light fw-bold">Prediksi</span>
-                </div>
-                <div class="card-body fs-1 fw-bold">47</div>
-                <div class="card-footer text-muted">{{day_two | date:"D, d M Y"}}</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-header">
-                    <span class="badge badge-light fw-bold">Prediksi</span>
-                </div>
-                <div class="card-body fs-1 fw-bold">46</div>
-                <div class="card-footer text-muted">{{day_three | date:"D, d M Y"}}</div>
-            </div>
-        </div>
-    </div>
+  </div>
 
-    <div class="card mb-10">
-        <div class="card-header">
-            <h3 class="card-title fw-bold">Air Quality Trends</h3>
-        </div>
-        <div class="card-body">
-            <div id="airQualityChart" style="height: 300px;"></div>
-        </div>
-    </div>
 
-    <div class="row g-6">
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="fs-2 fw-bold">PM2.5</div>
-                    <div class="fs-1">15</div>
-                    <div class="text-muted">-5%</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="fs-2 fw-bold">CO2</div>
-                    <div class="fs-1">400</div>
-                    <div class="text-success">+2%</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="fs-2 fw-bold">Ozone</div>
-                    <div class="fs-1">30</div>
-                    <div class="text-muted">0%</div>
-                </div>
-            </div>
-        </div>
+  <div class="row g-6 mb-10">
+    <div class="card mb-10 border-primary shadow-sm">
+      <div class="card-header">
+        <h3 class="card-title fw-bold">Kategori Indeks Standar Pencemaran Udara (ISPU)</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered text-center">
+          <thead class="table-primary">
+            <tr>
+              <th>Rentang</th>
+              <th>Kategori</th>
+              <th>Penjelasan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td >1–50</td>
+              <td class="bg-hijau">Baik</td>
+              <td>Tingkat mutu udara yang sangat baik, tidak memberikan efek negatif terhadap manusia, hewan dan
+                tumbuhan</td>
+            </tr>
+            <tr>
+              <td>51–100</td>
+              <td class="bg-biru">Sedang</td>
+              <td>Tingkat mutu udara masih dapat diterima pada kesehatan manusia, hewan dan tumbuhan.</td>
+            </tr>
+            <tr>
+              <td>101–200</td>
+              <td class="bg-kuning">Tidak Sehat</td>
+              <td>Tingkat mutu udara yang bersifat merugikan pada manusia, hewan dan tumbuhan.</td>
+            </tr>
+            <tr>
+              <td>201–300</td>
+              <td class="bg-merah">Sangat Tidak Sehat</td>
+              <td>Tingkat mutu udara yang dapat meningkatkan resiko kesehatan pada sejumlah segmen populasi yang
+                terpapar.</td>
+            </tr>
+            <tr>
+              <td>301+</td>
+              <td class="bg-hitam text-white">Berbahaya</td>
+              <td>Tingkat mutu udara yang dapat merugikan kesehatan serius pada populasi dan perlu penanganan cepat.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %}
+  {% endblock %}
+  {% include "layouts/footer.html" %}
 
-{% block scripts %}
-<script>
-    var options = {
-        chart: {
-            type: 'bar',
-            height: 300
-        },
-        series: [{
-            name: 'Pollutants',
-            data: [70, 55, 35, 50, 42, 60, 45]
-        }],
-        xaxis: {
-            categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        }
-    };
 
-    var chart = new ApexCharts(document.querySelector("#airQualityChart"), options);
-    chart.render();
-</script>
-{% endblock %}
+  {% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    fetch("{% url 'chart-dominan' %}")
+      .then(response => response.json())
+      .then(data => {
+        const ctx = document.getElementById('dominanchart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: 'Frekuensi Polutan Dominan',
+              data: data.values,
+              backgroundColor: 'rgba(75, 192, 192, 0.5)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      });
+  </script>
+  <script>
+    fetch("{% url 'get_chart_data_polutan' %}")
+      .then(response => response.json())
+      .then(data => {
+        const ctx = document.getElementById('polutanChart').getContext('2d');
+        
+        // Membuat chart menggunakan Chart.js
+        const chart = new Chart(ctx, {
+          type: 'bar',  // Tipe chart (bar, line, pie, dll)
+          data: {
+            labels: data.labels,  // Labels (nama polutan)
+            datasets: [{
+              label: 'Jumlah Polutan',  // Label dataset
+              data: data.values,  // Nilai jumlah tiap polutan
+              backgroundColor: 'rgba(158, 188, 138, 0.5)',  // Warna latar belakang bar
+              borderColor: 'rgba(114, 143, 94, 1)',  // Warna border bar
+              borderWidth: 1  // Lebar border bar
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top'
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return context.raw;  // Menampilkan nilai tooltip sesuai dengan data
+                  }
+                }
+              }
+            }
+          }
+        });
+      })
+      .catch(error => console.error('Error loading chart data:', error));
+  </script>
+  
+
+  {% endblock %}

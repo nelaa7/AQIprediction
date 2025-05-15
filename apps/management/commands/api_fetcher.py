@@ -7,8 +7,22 @@ import time
 
 URL = f"https://api.waqi.info/feed/A420154/?token=b0a0842951c0c5e38d053830aa4c727e5dcfc9bb"
 
+def safe_int(value):
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+def safe_float(value):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
 class Command(BaseCommand):
     help = 'Fetch AQI data and save it to the database every hour'
+    
+    
     
     def __init__(self):
         super().__init__()
@@ -51,14 +65,14 @@ class Command(BaseCommand):
                 "log_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "timestamp": time_str,
                 "location": d["attributions"][0].get("station"),
-                "aqi": d["aqi"],
-                "dominan": d["dominentpol"],
-                "pm25": d["iaqi"].get("pm25", {}).get("v") or None,
-                "pm10": d["iaqi"].get("pm10", {}).get("v") or None,
-                "co": d["iaqi"].get("co", {}).get("v") or None,
-                "no2": d["iaqi"].get("no2", {}).get("v") or None,
-                "so2": d["iaqi"].get("so2", {}).get("v") or None,
-                "o3": d["iaqi"].get("o3", {}).get("v") or None
+                "aqi": safe_int(d.get("aqi")),
+                "dominan": d.get("dominentpol"),
+                "pm25": safe_float(d["iaqi"].get("pm25", {}).get("v")),
+                "pm10": safe_float(d["iaqi"].get("pm10", {}).get("v")),
+                "co": safe_float(d["iaqi"].get("co", {}).get("v")),
+                "no2": safe_float(d["iaqi"].get("no2", {}).get("v")),
+                "so2": safe_float(d["iaqi"].get("so2", {}).get("v")),
+                "o3": safe_float(d["iaqi"].get("o3", {}).get("v")),
             }
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error: {e}"))
