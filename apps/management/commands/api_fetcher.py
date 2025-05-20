@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
         while True:
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            self.stdout.write(self.style.WARNING(f"[{now}] Menunggu proses pengambilan data ..."))
+            self.stdout.write(self.style.HTTP_INFO(f"[{now}] Menunggu proses pengambilan data ..."))
             schedule.run_pending()
             time.sleep(1)
 
