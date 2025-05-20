@@ -1,0 +1,5 @@
+Actual \ Pred,Baik,Berbahaya,Sedang,Tidak Sehat
+Baik,6,0,0,0
+Berbahaya,0,26,0,0
+Sedang,0,0,113,0
+Tidak Sehat,1,0,0,358

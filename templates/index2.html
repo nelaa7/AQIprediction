@@ -35,23 +35,8 @@
   {% endif %} text-center shadow">
 
         <div class="card-body fs-1 fw-bold text-dark"> AQI HARI INI
-          <p class="card-title fs-5 fw-semibold">{% if aqi.aqi|to_int <= 50 %}
-    Baik
-  {% elif aqi.aqi|to_int <= 100 %}
-    Sedang
-  {% elif aqi.aqi|to_int <= 200 %}
-    Tidak Sehat
-  {% elif aqi.aqi|to_int <= 300 %}
-    Sangat Tidak Sehat
-  {% elif aqi.aqi|to_int >= 301 %} 
-    Berbaha
-    {% else %}
-   
-
-  {% endif %} </p>
-
+          <h5 class="card-title fw-semibold">Polutan dominan {{aqi.dominan}}</h5>
           <h1 class="display-1 my-4">{{aqi.aqi}}</h1>
-          <p class="card-title fs-5 fw-semibold">Polutan dominan {{aqi.dominan}}</p>
           <p class="text-dark fs-5 fw-semibold"> {{aqi.timestamp | date:"D, d M Y H:i"}}</p>
         </div>
       </div>
@@ -135,62 +120,99 @@
         </div> <!-- end card-body -->
       </div> <!-- end card -->
     </div> <!-- end col-lg-9 -->
+
+
+
+
+
+
   </div>
 
   <div class="row g-6 mb-10">
+    {% for prediction in daily_predictions %}
     <div class="col-md-4">
       <div class="card text-center border-info shadow-sm">
         <div class="card-header-secondary">
           <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
         </div>
-        <div class="card-body fs-1 fw-bold"> {{prediksi_besok}}</div>
-        <div class="card-footer text-muted"> {{tanggal_besok| date:"D, d M Y"}}</div>
+        <div class="card-body fs-1 fw-bold"> {{prediction.average_aqi}}</div>
+        <div class="card-footer text-muted"> {{prediction.date | date:"D, d M Y"}}</div>
       </div>
     </div>
-
-    <div class="col-md-4">
-      <div class="card text-center border-info shadow-sm">
-        <div class="card-header-secondary">
-          <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
-        </div>
-        <div class="card-body fs-1 fw-bold"> {{prediksi_lusa}}</div>
-        <div class="card-footer text-muted"> {{tanggal_lusa | date:"D, d M Y"}}</div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card text-center border-info shadow-sm">
-        <div class="card-header-secondary">
-          <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
-        </div>
-        <div class="card-body fs-1 fw-bold"> {{prediksi_3hari}}</div>
-        <div class="card-footer text-muted"> {{tanggal_3hari| date:"D, d M Y"}}</div>
-      </div>
-    </div>
-
-
-  </div>
+    {% endfor%}
 
     <div class="row g-6 mb-10">
-      <div class="card mb-10 border-warning shadow-sm ">
+      <div class="card mb-10 border-success shadow-sm">
         <div class="card-header">
-          <h3 class="card-title fw-bold">Air Quality Trends</h3>
+          <h3 class="card-title fw-bold">Prediksi AQI 3 Hari ke Depan (Setiap jam)</h3>
         </div>
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="card-body" style="height: 300px;">
-              <canvas id="dominanchart"></canvas>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6">
-            <div class="card-body" style="height: 300px;">
-              <canvas id="polutanChart"></canvas>
-            </div>
-          </div>
+        <div class="card-body">
+          <table class="table table-bordered text-center">
+            <thead class="table-primary">
+              <tr>
+                <th style="width: 35%;">Waktu</th>
+                <th style="width: 35%;">Prediksi AQI</th>
+                <th style="width: 30%;">Kategori</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in predictions %}
+              <tr>
+                <td>{{item.timestamp| date:"D, d M Y H:i"}}</td>
+                <td>{{item.predicted_aqi}}</td>
+                <td class="
+  {% if item.predicted_aqi|to_int <= 50 %}
+    bg-hijau 
+  {% elif item.predicted_aqi|to_int <= 100 %}
+    bg-biru
+  {% elif item.predicted_aqi|to_int <= 200 %}
+    bg-kuning
+  {% elif item.predicted_aqi|to_int <= 300 %}
+    bg-merah
+  {% elif item.predicted_aqi|to_int >= 301 %} 
+    bg-hitam
+  {% else %}
+    bg-putih
+  {% endif %}
+">{% if item.predicted_aqi|to_int <= 50 %}
+                  Baik
+                  {% elif item.predicted_aqi|to_int <= 100 %}
+                  Sedang
+                  {% elif item.predicted_aqi|to_int <= 200 %}
+                  Tidak Sehat
+                  {% elif item.predicted_aqi|to_int <= 300 %}
+                  Sangat Tidak Sehat
+                  {% elif item.predicted_aqi|to_int >= 301 %}
+                  Berbahaya
+                  {% else %}
+                  Tidak Diketahui
+                  {% endif %}</td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
         </div>
-
       </div>
+    </div>
+
+    <div class="card mb-10 border-warning shadow-sm ">
+      <div class="card-header">
+        <h3 class="card-title fw-bold">Air Quality Trends</h3>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="card-body" style="height: 300px;">
+            <canvas id="dominanchart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="card-body" style="height: 300px;">
+            <canvas id="polutanChart"></canvas>
+          </div>
+        </div>
+      </div>
+
     </div>
 
 

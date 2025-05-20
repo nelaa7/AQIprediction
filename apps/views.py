@@ -1,6 +1,9 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from datetime import datetime, date, timedelta
+
+import joblib
+import pandas as pd
 from apps.models import AQILog, PredictedAQI
 from django.db.models import Count, Q
 from django.db.models import Avg
@@ -8,6 +11,7 @@ from django.utils.timezone import now
 
 
 # Create your views here.
+FEATURES = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3']
 
 def index(request):
     today = date.today
@@ -28,20 +32,47 @@ def index(request):
     so2 = AQILog.objects.filter(so2__regex=r'^\d+(\.\d+)?$').count()
     predictions = PredictedAQI.objects.order_by('timestamp')
     
+    #3 hari kedepan
+    latest_log = AQILog.objects.order_by('-timestamp').first()
+    if not latest_log:
+        return render(request, 'predict_aqi.html', {'error': 'Data AQI tidak ditemukan.'})
     
-    today = now().date()
-    three_days = [today + timedelta(days=i) for i in range(1, 4)]  # besok sampai 3 hari ke depan
+    input_data = {
+        'pm25': latest_log.pm25,
+        'pm10': latest_log.pm10,
+        'co': latest_log.co,
+        'no2': latest_log.no2,
+        'so2': latest_log.so2,
+        'o3': latest_log.o3,
+    }
+    
+    
+    df_input = pd.DataFrame([input_data], columns=FEATURES)
+    model1 = joblib.load("models/rf_day1.pkl")
+    model2 = joblib.load("models/rf_day2.pkl")
+    model3 = joblib.load("models/rf_day3.pkl")
+    
+    pred1 = model1.predict(df_input)[0]
+    pred2 = model2.predict(df_input)[0]
+    pred3 = model3.predict(df_input)[0]
 
-    result = []
 
-    for day in three_days:
-        day_data = PredictedAQI.objects.filter(timestamp__date=day)
-        avg_aqi = day_data.aggregate(avg_aqi=Avg('predicted_aqi'))['avg_aqi']
 
-        result.append({
-            'date': day,
-            'average_aqi': round(avg_aqi, 2) if avg_aqi else None
-        })
+    
+    
+    # today = now().date()
+    # three_days = [today + timedelta(days=i) for i in range(1, 4)]  # besok sampai 3 hari ke depan
+
+    # result = []
+
+    # for day in three_days:
+    #     day_data = PredictedAQI.objects.filter(timestamp__date=day)
+    #     avg_aqi = day_data.aggregate(avg_aqi=Avg('predicted_aqi'))['avg_aqi']
+
+    #     result.append({
+    #         'date': day,
+    #         'average_aqi': round(avg_aqi, 2) if avg_aqi else None
+    #     })
     
     context ={
         'title' : 'AQI',
@@ -59,7 +90,14 @@ def index(request):
         'no2':no2,
         'so2':so2,
         'predictions':predictions,
-        'daily_predictions': result
+        # 'daily_predictions': result,
+        'prediksi_besok': round(pred1, 2),
+        'prediksi_lusa': round(pred2, 2),
+        'prediksi_3hari': round(pred3, 2),
+        'input_data': input_data,
+        'tanggal_besok': latest_log.timestamp + timedelta(days=1),
+        'tanggal_lusa': latest_log.timestamp + timedelta(days=2),
+        'tanggal_3hari': latest_log.timestamp + timedelta(days=3),
         
     }
     return render (request, 'index.html', context)
