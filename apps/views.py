@@ -4,11 +4,23 @@ from datetime import datetime, date, timedelta
 
 import joblib
 import pandas as pd
-from apps.models import AQILog, PredictedAQI
+from apps.models import AQILog, Article, PredictedAQI
 from django.db.models import Count, Q
 from django.db.models import Avg
 from django.utils.timezone import now
+from django.views.generic import DetailView
 
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'article_detail.html'  # file template untuk detail
+    context_object_name = 'article'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Ambil semua artikel lain, kecuali yang sedang dilihat
+        context['other_articles'] = Article.objects.exclude(id=self.object.id).order_by('-timestamp')[:5]
+        return context
 
 # Create your views here.
 FEATURES = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3']
@@ -55,6 +67,8 @@ def index(request):
     pred1 = model1.predict(df_input)[0]
     pred2 = model2.predict(df_input)[0]
     pred3 = model3.predict(df_input)[0]
+    
+    article = Article.objects.all()[:3]
 
 
 
@@ -98,9 +112,12 @@ def index(request):
         'tanggal_besok': latest_log.timestamp + timedelta(days=1),
         'tanggal_lusa': latest_log.timestamp + timedelta(days=2),
         'tanggal_3hari': latest_log.timestamp + timedelta(days=3),
+        'article':article,
         
     }
     return render (request, 'index.html', context)
+
+
 
 def get_chart_data_polutan(request):
     data = {
@@ -147,3 +164,21 @@ def get_chat_data_dominan(request):
             'total': total_terdeteksi + total_tidak_terdeteksi,
         }
     })
+    
+def article_list(request):
+    article_list = Article.objects.all()
+    
+    context ={
+        'title': 'Article',
+        'article_list': article_list,
+    }
+    
+    return render (request, 'article_list.html', context)
+
+def about(request):
+    
+    context={
+        'title': 'About us',
+        
+    }
+    return render (request, 'about.html', context)

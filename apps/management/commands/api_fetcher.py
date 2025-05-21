@@ -1,35 +1,33 @@
 from django.core.management.base import BaseCommand
 import requests
 from datetime import datetime
-from apps.models import AQILog 
+from apps.models import AQILog
 import schedule
 import time
 
 URL = f"https://api.waqi.info/feed/A420154/?token=b0a0842951c0c5e38d053830aa4c727e5dcfc9bb"
 
 def safe_int(value):
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 def safe_float(value):
-        try:
-            return float(value)
-        except (TypeError, ValueError):
-            return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 class Command(BaseCommand):
-    help = 'Fetch AQI data and save it to the database every hour'
-    
-    
-    
+    help = 'Fetch AQI data and save it to the database every 15 minutes'
+
     def __init__(self):
         super().__init__()
-        self.counter = 0 
+        self.counter = 0
 
     def handle(self, *args, **kwargs):
-        # Jadwalkan job setiap 1 jam
+        # Jadwalkan job setiap 15 menit
         schedule.every(15).minutes.do(self.job)
 
         self.stdout.write(self.style.SUCCESS("Scheduler berjalan. Menunggu 15 menit pertama..."))
@@ -41,7 +39,7 @@ class Command(BaseCommand):
             time.sleep(1)
 
     def job(self):
-        self.counter += 1  
+        self.counter += 1
         self.stdout.write(self.style.WARNING(f"===> Pengambilan data ke-{self.counter}"))
         data = self.get_aqi_data()
         if data:
@@ -62,11 +60,10 @@ class Command(BaseCommand):
             time_str = d["time"]["s"]
 
             return {
-                "log_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "timestamp": time_str,
-                "location": d["attributions"][0].get("station"),
+                "timestamp": datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S"),  # Fix penting
+                "location": d["attributions"][0].get("station", "Unknown"),
                 "aqi": safe_int(d.get("aqi")),
-                "dominan": d.get("dominentpol"),
+                "dominan": d.get("dominentpol", ""),
                 "pm25": safe_float(d["iaqi"].get("pm25", {}).get("v")),
                 "pm10": safe_float(d["iaqi"].get("pm10", {}).get("v")),
                 "co": safe_float(d["iaqi"].get("co", {}).get("v")),
@@ -80,7 +77,6 @@ class Command(BaseCommand):
 
     def save_to_db(self, data):
         AQILog.objects.create(
-            log_date=data['log_date'],
             timestamp=data['timestamp'],
             location=data['location'],
             aqi=data['aqi'],

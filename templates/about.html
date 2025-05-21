@@ -1,0 +1,128 @@
+{% include "layouts/master.html" %}
+{% include "layouts/header.html" %}
+
+{% block content %}
+<main class="pb-5">
+
+
+    <div class="text-white py-5 ">
+        <div class="container">
+            <h1 class="display-4 mb-3 text-primary">About Us</h1>
+            <p class="lead text-dark">Memberdayakan masyarakat dengan wawasan kualitas udara berbasis sains secara real-time untuk melindungi kesehatan dan lingkungan.</p>
+        </div>
+    </div>
+
+    <section class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="text-primary mb-3">Our Story</h2>
+                <p>
+                    Didirikan pada tahun 2025, <strong>AQIS</strong> lahir dari kepedulian terhadap dampak polusi udara yang semakin besar terhadap kesehatan masyarakat. Di tengah urbanisasi yang pesat dan perubahan iklim, kami melihat kebutuhan mendesak akan sistem yang mampu memprediksi dan menjelaskan perubahan kualitas udara sebelum terjadi
+                </p>
+                <p>
+                   Perjalanan kami dimulai dengan tujuan sederhana: menyediakan prediksi kualitas udara yang tepat waktu, mudah diakses, dan dapat diandalkan melalui kekuatan ilmu data dan pembelajaran mesin.
+                </p>
+
+                <h2 class="text-primary mt-5 mb-3">Our Mission</h2>
+                <p>Di AQIS, misi kami adalah memberikan prediksi kualitas udara yang akurat dan dapat ditindaklanjuti agar individu, komunitas, dan pembuat kebijakan dapat mengambil keputusan yang tepat untuk mengurangi paparan dan meningkatkan kesejahteraan.</p>
+                <ul class="list-unstyled">
+                    <li>✓ Memprediksi kualitas udara dengan model machine learning terkini</li>
+                    <li>✓ Memberikan informasi lingkungan secara real-time yang mudah dipahami</li>
+                    <li>✓ Meningkatkan kesadaran akan dampak polusi terhadap kesehatan</li>
+                    <li>✓ Mendukung inisiatif udara bersih dengan data yang transparan dan terbuka</li>
+                </ul>
+
+                {% comment %} <h2 class="text-primary mt-5 mb-3">Our Team</h2>
+                <p>Our talented team consists of award-winning journalists, editors, photographers...</p> {% endcomment %}
+            </div>
+
+            {% comment %} <div class="col-lg-4">
+                <div class="bg-light p-4 rounded mb-4">
+                    <h4 class="text-primary mb-3">Our Impact</h4>
+                    <div class="mb-3">
+                        <h5 class="text-primary">2.5M+</h5>
+                        <p>Monthly Readers</p>
+                    </div>
+                    <div class="mb-3">
+                        <h5 class="text-primary">15K+</h5>
+                        <p>Articles Published</p>
+                    </div>
+                    <div>
+                        <h5 class="text-primary">50+</h5>
+                        <p>Regions Covered</p>
+                    </div>
+                </div>
+
+                <div class="bg-primary text-white p-4 rounded">
+                    <h4 class="mb-3">Join Our Newsletter</h4>
+                    <p>Stay updated with our latest stories and breaking news.</p>
+                    <form>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                        </div>
+                        <button class="btn btn-light text-primary w-100">Subscribe Now</button>
+                    </form>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </section>
+
+    {% comment %} <section class="container mt-5 mb-5">
+        <h2 class="text-center text-primary mb-4">Leadership Team</h2>
+        <div class="row">
+            {% for author in authors %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ author.avatar.url }}" class="card-img-top" alt="Team member">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ author.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ author.occupation }}</h6>
+                        <p class="card-text">Over 15 years of journalism experience with a passion for investigative reporting.</p>
+                        <div>
+                            <a href="#" class="me-2"><i class="bi bi-twitter text-primary"></i></a>
+                            <a href="#"><i class="bi bi-linkedin text-primary"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No data yet.</p>
+            {% endfor %}
+        </div>
+    </section> {% endcomment %}
+
+    <section class="bg-light py-5">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="text-primary">Contact Us</h2>
+                <p>Have questions, feedback, or news tips? Reach out to our team.</p>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4 mb-3">
+                    <div class="bg-white p-3 rounded shadow-sm">
+                        <h5>Email Us</h5>
+                        <p>For general inquiries and feedback</p>
+                        <a href="mailto:info@aqis.com">info@aqis.com</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="bg-white p-3 rounded shadow-sm">
+                        <h5>Call Us</h5>
+                        <p>Available Monday to Friday, 9am-5pm</p>
+                        <a href="tel:+6281234567890">+62 812 3456 7890</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="bg-white p-3 rounded shadow-sm">
+                        <h5>Visit Us</h5>
+                        <p>Jl. Airlangga, Surabaya, Indonesia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+{% endblock %}
+
+{% include "layouts/footer.html" %}

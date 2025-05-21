@@ -67,7 +67,7 @@
           <div class="row g-6 mt-4">
             <!-- PM2.5 -->
             <div class="col-md-2">
-              <div class="card border-info shadow-sm">
+              <div class="card border-secondary shadow-sm">
 
                 <div class="card-body">
                   <h6 class="fw-bold">PM2.5</h6>
@@ -78,7 +78,7 @@
 
             <!-- CO -->
             <div class="col-md-2">
-              <div class="card border-info shadow-sm">
+              <div class="card border-secondary shadow-sm">
 
                 <div class="card-body">
                   <h6 class="fw-bold">CO</h6>
@@ -89,7 +89,7 @@
 
             <!-- Ozone -->
             <div class="col-md-2">
-              <div class="card border-info shadow-sm">
+              <div class="card border-secondary shadow-sm">
 
                 <div class="card-body">
                   <h6 class="fw-bold">O3</h6>
@@ -100,7 +100,7 @@
 
             <!-- pm10 -->
             <div class="col-md-2">
-              <div class="card border-info shadow-sm">
+              <div class="card border-secondary shadow-sm">
 
                 <div class="card-body">
                   <h6 class="fw-bold">PM10</h6>
@@ -111,7 +111,7 @@
 
             <!-- no2 -->
             <div class="col-md-2">
-              <div class="card border-info shadow-sm">
+              <div class="card border-secondary shadow-sm">
 
                 <div class="card-body">
                   <h6 class="fw-bold">NO2</h6>
@@ -122,7 +122,7 @@
 
             <!-- so2 -->
             <div class="col-md-2">
-              <div class="card border-info shadow-sm">
+              <div class="card border-secondary shadow-sm">
 
                 <div class="card-body">
                   <h6 class="fw-bold">SO2</h6>
@@ -141,7 +141,7 @@
     <div class="col-md-4">
       <div class="card text-center border-info shadow-sm">
         <div class="card-header-secondary">
-          <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
+          <span class="badge badge-pill badge-light fw-bold text-info fs-2">Prediksi AQI</span>
         </div>
         <div class="card-body fs-1 fw-bold"> {{prediksi_besok}}</div>
         <div class="card-footer text-muted"> {{tanggal_besok| date:"D, d M Y"}}</div>
@@ -151,7 +151,7 @@
     <div class="col-md-4">
       <div class="card text-center border-info shadow-sm">
         <div class="card-header-secondary">
-          <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
+          <span class="badge badge-pill badge-light fw-bold text-info fs-2">Prediksi AQI</span>
         </div>
         <div class="card-body fs-1 fw-bold"> {{prediksi_lusa}}</div>
         <div class="card-footer text-muted"> {{tanggal_lusa | date:"D, d M Y"}}</div>
@@ -161,7 +161,7 @@
     <div class="col-md-4">
       <div class="card text-center border-info shadow-sm">
         <div class="card-header-secondary">
-          <span class="badge badge-pill badge-light fw-bold text-info">Prediksi AQI</span>
+          <span class="badge badge-pill badge-light fw-bold text-info fs-2">Prediksi AQI</span>
         </div>
         <div class="card-body fs-1 fw-bold"> {{prediksi_3hari}}</div>
         <div class="card-footer text-muted"> {{tanggal_3hari| date:"D, d M Y"}}</div>
@@ -244,6 +244,40 @@
     </div>
   </div>
 </div>
+
+<section id="up-to-date" class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold fs-4">
+            Latest Hot News <br />
+            Good for Curiousity
+        </h2>
+        
+    </div>
+
+    <div class="row g-4">
+        {% for article in article %}
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a href="{% url 'article-detail' slug=article.slug %}" class="text-decoration-none text-dark">
+                    <div class="card h-100 border border-light shadow-sm transition">
+                        <div class="position-relative" style="height: 200px; overflow: hidden;">
+                            <span class="badge bg-warning position-absolute top-0 start-0 m-3 text-uppercase">
+                                HOT
+                            </span>
+                            <img src="{{ article.thumbnail.url }}" class="w-100 h-100 object-fit-cover" alt="thumbnail">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">{{ article.name }}</h5>
+                            <p class="card-text text-muted small">{{ article.timestamp|date:"d M, Y" }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <p>No recent data yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
 
 {% endblock %}
 {% include "layouts/footer.html" %}
