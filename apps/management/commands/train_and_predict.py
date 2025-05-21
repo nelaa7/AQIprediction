@@ -12,22 +12,44 @@ class Command(BaseCommand):
     help = 'Latih model dan evaluasi prediksi AQI untuk 3 hari ke depan'
 
     def handle(self, *args, **kwargs):
-        df = pd.DataFrame.from_records(AQILog.objects.all().values())
-        df.sort_values("timestamp", inplace=True)
+        df = pd.DataFrame.from_records(AQILog.objects.all().values()) #mengambil dari dari db model AQIlog + dikonversi queryset django -> pandas dataframe
+        df.sort_values("timestamp", inplace=True) #mengurutkan data berdasarkan timestamp secara ascending
+        
+        numeric_cols = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3', 'aqi']
+        total_missing_before = df[numeric_cols].isnull().sum().sum()
+        self.stdout.write(self.style.WARNING(f"\nTotal missing value sebelum preprocessing: {total_missing_before}"))
+        self.stdout.write(str(df[numeric_cols].isnull().sum()))
+        
+        numeric_cols = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3', 'aqi']
+        for col in numeric_cols:
+            mean_val = df[col].mean()
+            df[col] = df[col].fillna(mean_val)
+            
+        total_missing_after = df[numeric_cols].isnull().sum()
+        self.stdout.write((f"\nTotal missing value setelah : {total_missing_after}"))
+        
+        for col in numeric_cols:
+            mean = df[col].mean()
+            std = df[col].std()
+            lower, upper = mean - 3*std, mean + 3*std
+            outliers = df[(df[col] < lower) | (df[col] > upper)]
 
+            print(f"[{col}] Jumlah outlier: {len(outliers)}")      
+        
+        
         # Fitur & target
-        features = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3']
+        features = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3'] #variabel input yg digunakan u/ prediksi
         for lag in range(1, 4):
             df[f'aqi_t+{lag}'] = df['aqi'].shift(-lag)
 
-        df.dropna(inplace=True)
+        df.dropna(inplace=True) #menghapus NaN (hasil dari shifting)
 
-        X = df[features]
-        y1, y2, y3 = df['aqi_t+1'], df['aqi_t+2'], df['aqi_t+3']
+        X = df[features] #variabel fitur
+        y1, y2, y3 = df['aqi_t+1'], df['aqi_t+2'], df['aqi_t+3'] #variabel target
 
-        X_train, X_test, y1_train, y1_test = train_test_split(X, y1, test_size=0.2, random_state=42)
-        _, _, y2_train, y2_test = train_test_split(X, y2, test_size=0.2, random_state=42)
-        _, _, y3_train, y3_test = train_test_split(X, y3, test_size=0.2, random_state=42)
+        X_train, X_test, y1_train, y1_test = train_test_split(X, y1, test_size=0.3, random_state=42)
+        _, _, y2_train, y2_test = train_test_split(X, y2, test_size=0.3, random_state=42)
+        _, _, y3_train, y3_test = train_test_split(X, y3, test_size=0.3, random_state=42)
 
         model1 = RandomForestRegressor().fit(X_train, y1_train)
         model2 = RandomForestRegressor().fit(X_train, y2_train)
@@ -55,7 +77,7 @@ class Command(BaseCommand):
         evaluate(model3, X_test, y3_test, "3 Hari Lagi")
 
         # Prediksi terakhir
-        last_data = X.iloc[[-1]]
+        last_data = X.iloc[[-1]] #ngambil data terbaru (baris terakhir)
         pred1 = model1.predict(last_data)[0]
         pred2 = model2.predict(last_data)[0]
         pred3 = model3.predict(last_data)[0]

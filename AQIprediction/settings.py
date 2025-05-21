@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps',
     'AQIprediction',
+    # 'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,44 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+# # Default primary key field type
+# # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# # Logging configuration (optional tapi recommended)
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'file': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/aqi_scheduler.log',
+#             'formatter': 'verbose',
+#         },
+#         'console': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose',
+#         },
+#     },
+#     'loggers': {
+#         'aqi_auto': {
+#             'handlers': ['file', 'console'],
+#             'level': 'INFO',
+#             'propagate': False,
+#         },
+#     },
+# }
+
+# # APScheduler settings
+# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+# APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+

@@ -15,6 +15,19 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         df = pd.DataFrame.from_records(AQILog.objects.all().values())
         df.sort_values("timestamp", inplace=True)
+        
+        numeric_cols = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3', 'aqi']
+        total_missing_before = df[numeric_cols].isnull().sum().sum()
+        self.stdout.write(self.style.WARNING(f"\nTotal missing value sebelum preprocessing: {total_missing_before}"))
+        self.stdout.write(str(df[numeric_cols].isnull().sum()))
+        
+        numeric_cols = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3', 'aqi']
+        for col in numeric_cols:
+            mean_val = df[col].mean()
+            df[col] = df[col].fillna(mean_val)
+            
+        total_missing_after = df[numeric_cols].isnull().sum()
+        self.stdout.write((f"\nTotal missing value setelah : {total_missing_after}"))
 
         features = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3']
 
