@@ -36,19 +36,19 @@
 
         <div class="card-body fs-1 fw-bold text-dark"> AQI HARI INI
           <p class="card-title fs-5 fw-semibold">{% if aqi.aqi|to_int <= 50 %}
-    Baik
-  {% elif aqi.aqi|to_int <= 100 %}
-    Sedang
-  {% elif aqi.aqi|to_int <= 200 %}
-    Tidak Sehat
-  {% elif aqi.aqi|to_int <= 300 %}
-    Sangat Tidak Sehat
-  {% elif aqi.aqi|to_int >= 301 %} 
-    Berbaha
-    {% else %}
-   
+            Baik
+            {% elif aqi.aqi|to_int <= 100 %}
+            Sedang
+            {% elif aqi.aqi|to_int <= 200 %}
+            Tidak Sehat
+            {% elif aqi.aqi|to_int <= 300 %}
+            Sangat Tidak Sehat
+            {% elif aqi.aqi|to_int >= 301 %}
+            Berbaha
+            {% else %}
 
-  {% endif %} </p>
+
+            {% endif %} </p>
 
           <h1 class="display-1 my-4">{{aqi.aqi}}</h1>
           <p class="card-title fs-5 fw-semibold">Polutan dominan {{aqi.dominan}}</p>
@@ -171,111 +171,111 @@
 
   </div>
 
-    <div class="row g-6 mb-10">
-      <div class="card mb-10 border-warning shadow-sm ">
-        <div class="card-header">
-          <h3 class="card-title fw-bold">Air Quality Trends</h3>
-        </div>
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="card-body" style="height: 300px;">
-              <canvas id="dominanchart"></canvas>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6">
-            <div class="card-body" style="height: 300px;">
-              <canvas id="polutanChart"></canvas>
-            </div>
-          </div>
-        </div>
-
+  <div class="row g-6 mb-10">
+    <div class="card mb-10 border-warning shadow-sm ">
+      <div class="card-header">
+        <h3 class="card-title fw-bold">Air Quality Trends</h3>
       </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="card-body" style="height: 300px;">
+            <canvas id="dominanchart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="card-body" style="height: 300px;">
+            <canvas id="polutanChart"></canvas>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </div>
 
 
-    <div class="row g-6 mb-10">
-      <div class="card mb-10 border-primary shadow-sm">
-        <div class="card-header">
-          <h3 class="card-title fw-bold">Kategori Indeks Standar Pencemaran Udara (ISPU)</h3>
-        </div>
-        <div class="card-body">
-          <table class="table table-bordered text-center">
-            <thead class="table-primary">
-              <tr>
-                <th>Rentang</th>
-                <th>Kategori</th>
-                <th>Penjelasan</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1–50</td>
-                <td class="bg-hijau">Baik</td>
-                <td>Tingkat mutu udara yang sangat baik, tidak memberikan efek negatif terhadap manusia, hewan dan
-                  tumbuhan</td>
-              </tr>
-              <tr>
-                <td>51–100</td>
-                <td class="bg-biru">Sedang</td>
-                <td>Tingkat mutu udara masih dapat diterima pada kesehatan manusia, hewan dan tumbuhan.</td>
-              </tr>
-              <tr>
-                <td>101–200</td>
-                <td class="bg-kuning">Tidak Sehat</td>
-                <td>Tingkat mutu udara yang bersifat merugikan pada manusia, hewan dan tumbuhan.</td>
-              </tr>
-              <tr>
-                <td>201–300</td>
-                <td class="bg-merah">Sangat Tidak Sehat</td>
-                <td>Tingkat mutu udara yang dapat meningkatkan resiko kesehatan pada sejumlah segmen populasi yang
-                  terpapar.</td>
-              </tr>
-              <tr>
-                <td>301+</td>
-                <td class="bg-hitam text-white">Berbahaya</td>
-                <td>Tingkat mutu udara yang dapat merugikan kesehatan serius pada populasi dan perlu penanganan cepat.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <div class="row g-6 mb-10">
+    <div class="card mb-10 border-primary shadow-sm">
+      <div class="card-header">
+        <h3 class="card-title fw-bold">Kategori Indeks Standar Pencemaran Udara (ISPU)</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered text-center">
+          <thead class="table-primary">
+            <tr>
+              <th>Rentang</th>
+              <th>Kategori</th>
+              <th>Penjelasan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1–50</td>
+              <td class="bg-hijau">Baik</td>
+              <td>Tingkat mutu udara yang sangat baik, tidak memberikan efek negatif terhadap manusia, hewan dan
+                tumbuhan</td>
+            </tr>
+            <tr>
+              <td>51–100</td>
+              <td class="bg-biru">Sedang</td>
+              <td>Tingkat mutu udara masih dapat diterima pada kesehatan manusia, hewan dan tumbuhan.</td>
+            </tr>
+            <tr>
+              <td>101–200</td>
+              <td class="bg-kuning">Tidak Sehat</td>
+              <td>Tingkat mutu udara yang bersifat merugikan pada manusia, hewan dan tumbuhan.</td>
+            </tr>
+            <tr>
+              <td>201–300</td>
+              <td class="bg-merah">Sangat Tidak Sehat</td>
+              <td>Tingkat mutu udara yang dapat meningkatkan resiko kesehatan pada sejumlah segmen populasi yang
+                terpapar.</td>
+            </tr>
+            <tr>
+              <td>301+</td>
+              <td class="bg-hitam text-white">Berbahaya</td>
+              <td>Tingkat mutu udara yang dapat merugikan kesehatan serius pada populasi dan perlu penanganan cepat.
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
+</div>
 
 <section id="up-to-date" class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold fs-4">
-            Latest Hot News <br />
-            Good for Curiousity
-        </h2>
-        
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold fs-4">
+      Latest Hot News <br />
+      Good for Curiousity
+    </h2>
 
-    <div class="row g-4">
-        {% for article in article %}
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a href="{% url 'article-detail' slug=article.slug %}" class="text-decoration-none text-dark">
-                    <div class="card h-100 border border-light shadow-sm transition">
-                        <div class="position-relative" style="height: 200px; overflow: hidden;">
-                            <span class="badge bg-warning position-absolute top-0 start-0 m-3 text-uppercase">
-                                HOT
-                            </span>
-                            <img src="{{ article.thumbnail.url }}" class="w-100 h-100 object-fit-cover" alt="thumbnail">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">{{ article.name }}</h5>
-                            <p class="card-text text-muted small">{{ article.timestamp|date:"d M, Y" }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        {% empty %}
-            <p>No recent data yet.</p>
-        {% endfor %}
+  </div>
+
+  <div class="row g-4">
+    {% for article in article %}
+    <div class="col-12 col-sm-6 col-lg-4">
+      <a href="{% url 'article-detail' slug=article.slug %}" class="text-decoration-none text-dark">
+        <div class="card h-100 border border-light shadow-sm transition">
+          <div class="position-relative" style="height: 200px; overflow: hidden;">
+            <span class="badge bg-warning position-absolute top-0 start-0 m-3 text-uppercase">
+              HOT
+            </span>
+            <img src="{{ article.thumbnail.url }}" class="w-100 h-100" style="object-fit: cover;" alt="thumbnail">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title fw-bold">{{ article.name }}</h5>
+            <p class="card-text text-muted small">{{ article.timestamp|date:"d M, Y" }}</p>
+          </div>
+        </div>
+      </a>
     </div>
+    {% empty %}
+    <p>No recent data yet.</p>
+    {% endfor %}
+  </div>
 </section>
 
 

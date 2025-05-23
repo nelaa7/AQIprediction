@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
 from django.core.management.base import BaseCommand
 from apps.models import AQILog
 from sklearn.ensemble import RandomForestRegressor
@@ -7,11 +9,13 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+from scipy.stats import zscore 
 
 class Command(BaseCommand):
     help = 'Latih model dan evaluasi prediksi AQI untuk 3 hari ke depan'
 
     def handle(self, *args, **kwargs):
+        
         df = pd.DataFrame.from_records(AQILog.objects.all().values()) #mengambil dari dari db model AQIlog + dikonversi queryset django -> pandas dataframe
         df.sort_values("timestamp", inplace=True) #mengurutkan data berdasarkan timestamp secara ascending
         
@@ -28,14 +32,32 @@ class Command(BaseCommand):
         total_missing_after = df[numeric_cols].isnull().sum()
         self.stdout.write((f"\nTotal missing value setelah : {total_missing_after}"))
         
-        for col in numeric_cols:
-            mean = df[col].mean()
-            std = df[col].std()
-            lower, upper = mean - 3*std, mean + 3*std
-            outliers = df[(df[col] < lower) | (df[col] > upper)]
-
-            print(f"[{col}] Jumlah outlier: {len(outliers)}")      
         
+        # Visualisasi distribusi awal AQI
+        plt.figure(figsize=(10, 5))
+        sns.histplot(df['aqi'], bins=30, kde=True)
+        plt.title('Distribusi Nilai AQI')
+        plt.xlabel('AQI')
+        plt.ylabel('Frekuensi')
+        plt.savefig("models/aqi_distribution.png")
+        plt.close()
+        self.stdout.write(self.style.SUCCESS("📊 Distribusi AQI disimpan ke 'models/aqi_distribution.png'"))
+
+        
+        # Visualisasi outlier untuk masing-masing kolom
+        for col in numeric_cols:
+            # Hitung Z-score
+            z_scores = zscore(df[col])
+            outliers_z = np.where(np.abs(z_scores) > 3)[0]  # ambil index outlier
+
+            # Logging jumlah outlier
+            self.stdout.write(f" [{col}] Jumlah outlier {len(outliers_z)}")
+            plt.figure(figsize=(8, 4))
+            sns.boxplot(x=df[col])
+            plt.title(f'Boxplot {col}')
+            plt.savefig(f"models/boxplot_{col}.png")
+            plt.close()
+            self.stdout.write(f"📦 Boxplot kolom {col} disimpan ke 'models/boxplot_{col}.png'")
         
         # Fitur & target
         features = ['pm25', 'pm10', 'co', 'no2', 'so2', 'o3'] #variabel input yg digunakan u/ prediksi
@@ -60,18 +82,32 @@ class Command(BaseCommand):
         joblib.dump(model1, "models/rf_day1.pkl")
         joblib.dump(model2, "models/rf_day2.pkl")
         joblib.dump(model3, "models/rf_day3.pkl")
-
-        # Evaluasi
+        
+        # Evaluasi model dan visualisasi prediksi vs aktual
         def evaluate(model, X_test, y_test, label):
             y_pred = model.predict(X_test)
             mae = mean_absolute_error(y_test, y_pred)
             rmse = np.sqrt(mean_squared_error(y_test, y_pred))
             r2 = r2_score(y_test, y_pred)
+
+            # Plot prediksi vs aktual
+            plt.figure(figsize=(6, 6))
+            plt.scatter(y_test, y_pred, alpha=0.5)
+            plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+            plt.title(f'Prediksi vs Aktual - {label}')
+            plt.xlabel('Aktual')
+            plt.ylabel('Prediksi')
+            plt.grid(True)
+            plt.savefig(f"models/pred_vs_actual_{label}.png")
+            plt.close()
+
             self.stdout.write(self.style.NOTICE(f"\n[{label}] Evaluasi Model:"))
             self.stdout.write(f"MAE: {mae:.2f}")
             self.stdout.write(f"RMSE: {rmse:.2f}")
             self.stdout.write(f"R²: {r2:.2f}")
-
+            self.stdout.write(f"📈 Plot prediksi vs aktual disimpan ke 'models/pred_vs_actual_{label}.png'")
+        
+        
         evaluate(model1, X_test, y1_test, "Besok")
         evaluate(model2, X_test, y2_test, "Lusa")
         evaluate(model3, X_test, y3_test, "3 Hari Lagi")
@@ -86,3 +122,15 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"📅 Prediksi Besok: {pred1:.2f}"))
         self.stdout.write(f"📅 Prediksi Lusa: {pred2:.2f}")
         self.stdout.write(f"📅 Prediksi 3 Hari Lagi: {pred3:.2f}")
+
+        
+        # Visualisasi Feature Importance dari model 1 (besok)
+        importances = model1.feature_importances_
+        plt.figure(figsize=(8, 4))
+        sns.barplot(x=features, y=importances)
+        plt.title('Feature Importance (Model Hari Besok)')
+        plt.xlabel('Fitur')
+        plt.ylabel('Pentingnya')
+        plt.savefig("models/feature_importance_day1.png")
+        plt.close()
+        self.stdout.write("🔥 Visualisasi feature importance disimpan ke 'models/feature_importance_day1.png'")
