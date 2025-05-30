@@ -46,14 +46,44 @@ class Command(BaseCommand):
 
         X = df[features] #variabel fitur
         y1, y2, y3 = df['aqi_t+1'], df['aqi_t+2'], df['aqi_t+3'] #variabel target
+        
+        self.stdout.write("Fitur (X):")
+        self.stdout.write(str(X))
+
+        self.stdout.write("\nAQI +1 hari:")
+        self.stdout.write(str(y1))
+
+        self.stdout.write("\nAQI +2 hari:")
+        self.stdout.write(str(y2))
+
+        self.stdout.write("\nAQI +3 hari:")
+        self.stdout.write(str(y3))
 
         X_train, X_test, y1_train, y1_test = train_test_split(X, y1, test_size=0.2, random_state=42)
         _, _, y2_train, y2_test = train_test_split(X, y2, test_size=0.2, random_state=42)
         _, _, y3_train, y3_test = train_test_split(X, y3, test_size=0.2, random_state=42)
+        
+        self.stdout.write("=== HASIL PEMBAGIAN DATASET ===")
+        self.stdout.write(f"X_train:\n{X_train.head(10)}\n")
+        # self.stdout.write(f"Shape X_train: {X_train.shape}")
+        self.stdout.write(f"X_test:\n{X_test.head(10)}\n")
+        # self.stdout.write(f"Shape X_test: {X_test.shape}")
+        self.stdout.write(f"y1_train:\n{y1_train.head(10)}\n")
+        # self.stdout.write(f"Shape y1_train: {y1_train.shape}")
+        self.stdout.write(f"y1_test:\n{y1_test.head(10)}\n")
+        # self.stdout.write(f"Shape y1_test: {y1_test.shape}")
+        self.stdout.write(f"y2_train:\n{y2_train.head(10)}\n")
+        # self.stdout.write(f"Shape y2_train: {y2_train.shape}")
+        self.stdout.write(f"y2_test:\n{y2_test.head(10)}\n")
+        # self.stdout.write(f"Shape y2_test: {y2_test.shape}")
+        self.stdout.write(f"y3_train:\n{y3_train.head(10)}\n")
+        # self.stdout.write(f"Shape y3_train: {y3_train.shape}")
+        self.stdout.write(f"y3_test:\n{y3_test.head(10)}\n")
+        # self.stdout.write(f"Shape y3_test: {y3_test.shape}")
 
-        model1 = RandomForestRegressor().fit(X_train, y1_train)
-        model2 = RandomForestRegressor().fit(X_train, y2_train)
-        model3 = RandomForestRegressor().fit(X_train, y3_train)
+        model1 = RandomForestRegressor(n_estimators=50).fit(X_train, y1_train)
+        model2 = RandomForestRegressor(n_estimators=50).fit(X_train, y2_train)
+        model3 = RandomForestRegressor(n_estimators=50).fit(X_train, y3_train)
 
         # Simpan model
         os.makedirs("models", exist_ok=True)
