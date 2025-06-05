@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-^uut0k1%k=)cle$^wdms4_(7&z($cn1&qyu8t-7ky(wty3j^55
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1:8000', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1:8000', '127.0.0.1', '8573-140-213-42-157.ngrok-free.app', '8573-140-213-42-157.ngrok-free.app']
 
 
 # Application definition
@@ -130,6 +130,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",  
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+]
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -137,46 +141,4 @@ INSTALLED_APPS += ['ckeditor_uploader']
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
-
-
-# # Default primary key field type
-# # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# # Logging configuration (optional tapi recommended)
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'file': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': 'logs/aqi_scheduler.log',
-#             'formatter': 'verbose',
-#         },
-#         'console': {
-#             'level': 'INFO',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose',
-#         },
-#     },
-#     'loggers': {
-#         'aqi_auto': {
-#             'handlers': ['file', 'console'],
-#             'level': 'INFO',
-#             'propagate': False,
-#         },
-#     },
-# }
-
-# # APScheduler settings
-# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-# APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 

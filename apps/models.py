@@ -2,8 +2,6 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
 
-
-
 class AQILog(models.Model):
     log_date = models.DateTimeField(auto_now_add=True)
     timestamp = models.DateTimeField()
@@ -16,7 +14,6 @@ class AQILog(models.Model):
     no2 = models.FloatField(null=True, blank=True)
     so2 = models.FloatField(null=True, blank=True)
     o3 = models.FloatField(null=True, blank=True)
-
 
     def __str__(self):
         return f"{self.log_date} - {self.timestamp} - AQI: {self.aqi}"
@@ -58,3 +55,5 @@ class Article(models.Model):
     
     def __str__(self):
         return f"{self.name}"
+    
+    

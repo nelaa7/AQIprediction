@@ -19,7 +19,9 @@
   <div class="row g-6 mb-10">
     <div class="col-lg-3">
       <div class="card 
-  {% if aqi.aqi|to_int <= 50 %}
+      {% if aqi.aqi is None%}
+      bg-putih
+  {% elif aqi.aqi|to_int <= 50 %}
     bg-hijau
   {% elif aqi.aqi|to_int <= 100 %}
     bg-biru
@@ -30,12 +32,12 @@
   {% elif aqi.aqi|to_int >= 301 %} 
     bg-hitam
     {% else %}
-    bg-putih
-
   {% endif %} text-center shadow">
 
         <div class="card-body fs-1 fw-bold text-dark"> AQI HARI INI
-          <p class="card-title fs-5 fw-semibold">{% if aqi.aqi|to_int <= 50 %}
+          <p class="card-title fs-5 fw-semibold">
+            {% if aqi.aqi is None%}
+            {% elif aqi.aqi|to_int <= 50 %}
             Baik
             {% elif aqi.aqi|to_int <= 100 %}
             Sedang
@@ -44,7 +46,7 @@
             {% elif aqi.aqi|to_int <= 300 %}
             Sangat Tidak Sehat
             {% elif aqi.aqi|to_int >= 301 %}
-            Berbaha
+            Berbahaya
             {% else %}
 
 

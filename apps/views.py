@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from datetime import datetime, date, timedelta
-
 import joblib
 import pandas as pd
 from apps.models import AQILog, Article, PredictedAQI
@@ -9,7 +8,6 @@ from django.db.models import Count, Q
 from django.db.models import Avg
 from django.utils.timezone import now
 from django.views.generic import DetailView
-
 
 class ArticleDetailView(DetailView):
     model = Article
@@ -69,24 +67,6 @@ def index(request):
     pred3 = model3.predict(df_input)[0]
     
     article = Article.objects.all()[:3]
-
-
-
-    
-    
-    # today = now().date()
-    # three_days = [today + timedelta(days=i) for i in range(1, 4)]  # besok sampai 3 hari ke depan
-
-    # result = []
-
-    # for day in three_days:
-    #     day_data = PredictedAQI.objects.filter(timestamp__date=day)
-    #     avg_aqi = day_data.aggregate(avg_aqi=Avg('predicted_aqi'))['avg_aqi']
-
-    #     result.append({
-    #         'date': day,
-    #         'average_aqi': round(avg_aqi, 2) if avg_aqi else None
-    #     })
     
     context ={
         'title' : 'AQI',
@@ -105,9 +85,9 @@ def index(request):
         'so2':so2,
         'predictions':predictions,
         # 'daily_predictions': result,
-        'prediksi_besok': round(pred1, 2),
-        'prediksi_lusa': round(pred2, 2),
-        'prediksi_3hari': round(pred3, 2),
+        'prediksi_besok': round(pred1),
+        'prediksi_lusa': round(pred2),
+        'prediksi_3hari': round(pred3),
         'input_data': input_data,
         'tanggal_besok': latest_log.timestamp + timedelta(days=1),
         'tanggal_lusa': latest_log.timestamp + timedelta(days=2),
@@ -164,7 +144,7 @@ def get_chat_data_dominan(request):
             'total': total_terdeteksi + total_tidak_terdeteksi,
         }
     })
-    
+   
 def article_list(request):
     article_list = Article.objects.all()
     
@@ -182,3 +162,17 @@ def about(request):
         
     }
     return render (request, 'about.html', context)
+
+    # today = now().date()
+    # three_days = [today + timedelta(days=i) for i in range(1, 4)]  # besok sampai 3 hari ke depan
+
+    # result = []
+
+    # for day in three_days:
+    #     day_data = PredictedAQI.objects.filter(timestamp__date=day)
+    #     avg_aqi = day_data.aggregate(avg_aqi=Avg('predicted_aqi'))['avg_aqi']
+
+    #     result.append({
+    #         'date': day,
+    #         'average_aqi': round(avg_aqi, 2) if avg_aqi else None
+    #     })
